@@ -26,6 +26,8 @@ def convert_to_facecard(num)
     'K'
   when 14
     'A'
+  else
+    num.to_s
   end
 end
 
@@ -120,7 +122,7 @@ def one_pair?(hand)
 end
 
 def high_card(hand)
-  hand_by_card_val = hand.map { |card| card.value }.max
+  convert_to_facecard(hand_by_card_val = hand.map { |card| card.value }.max)
 end
 
 
@@ -128,11 +130,13 @@ end
 def evaluate_hand(hand)
   sorted_hand = hand.sort_by { |card| card.value }
   pretty_hand = sorted_hand.map do |card|
-    'wip'
+    convert_to_facecard(card.value) + convert_to_suit(card.suit)
   end
+
   evaluated_hand = {
     hand: sorted_hand,
-    title: ''
+    title: '',
+    pretty_hand: pretty_hand
   }
 
   case
@@ -184,7 +188,7 @@ def start_game(number_of_players)
   players.each do |player| 
     draw_hand(player)
     evaluated_hand = evaluate_hand(player.hand)
-    puts "#{player.name} has a #{evaluated_hand[:title]}"
+    puts "#{player.name} has a #{evaluated_hand[:title]} with the hand #{evaluated_hand[:pretty_hand]}"
   end
 end
 
