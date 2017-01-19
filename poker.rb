@@ -58,11 +58,18 @@ end
 #
 
 def royal_flush?(hand)
-  byebug
   return false unless flush?(hand) && straight?(hand)
-  hand_by_card_value = hand.map { |card| card.value }
+  hand_by_card_val = hand.map { |card| card.value }
 
-  (hand_by_card_value & [10, 11, 12, 13, 14]).length == 5
+  (hand_by_card_val & [10, 11, 12, 13, 14]).length == 5
+end
+
+def straight_flush?(hand)
+  flush?(hand) && straight?(hand)
+end
+
+def four_of_a_kind?(hand)
+  hand.map { |card| card.value }.uniq.length == 2
 end
 
 def flush?(hand)
@@ -87,11 +94,34 @@ def straight?(hand)
   true
 end
 
+def three_of_a_kind?(hand)
+  return false unless one_pair?(hand)
+  hand_by_card_val = hand.map { |card| card.value }
+
+  hand_by_card_val.each do |card|
+    return true if (hand_by_card_val - [card, card, card]).length == 2
+  end
+  false
+end
+
+def two_pairs?(hand)
+  return false unless one_pair?(hand)
+  hand.map { |card| card.value }.uniq.length == 3
+end
+
+def one_pair?(hand)
+  hand_by_card_val = hand.map { |card| card.value }.uniq.length == 4
+end
+
+def high_card(hand)
+  hand_by_card_val = hand.map { |card| card.value }.max
+end
+
 
 
 def evaluate_hand(hand)
   sorted_hand = hand.sort_by { |card| card.value }
-  royal_flush?(sorted_hand)
+  three_of_a_kind?(sorted_hand)
 end
 
 #
