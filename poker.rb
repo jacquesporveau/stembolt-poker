@@ -122,7 +122,7 @@ def one_pair?(hand)
 end
 
 def high_card(hand)
-  convert_to_facecard(hand_by_card_val = hand.map { |card| card.value }.max)
+  convert_to_facecard(hand.map { |card| card.value }.max)
 end
 
 
@@ -136,39 +136,51 @@ def evaluate_hand(hand)
   evaluated_hand = {
     hand: sorted_hand,
     title: '',
-    pretty_hand: pretty_hand
+    pretty_hand: pretty_hand,
+    hand_signifigance: 1,
+    high_card: hand.map { |card| card.value }.max
   }
 
   case
   when royal_flush?(sorted_hand)
     evaluated_hand[:title] = 'Royal Flush'
+    evaluated_hand[:hand_signifigance] = 10
 
   when straight_flush?(sorted_hand)
     evaluated_hand[:title] = 'Straight Flush'
+    evaluated_hand[:hand_signifigance] = 9
 
   when four_of_a_kind?(sorted_hand)
     evaluated_hand[:title] = 'Four of a Kind'
+    evaluated_hand[:hand_signifigance] = 8
 
   when full_house?(sorted_hand)
     evaluated_hand[:title] = 'Full House'
+    evaluated_hand[:hand_signifigance] = 7
 
   when flush?(sorted_hand)
     evaluated_hand[:title] = 'Flush'
+    evaluated_hand[:hand_signifigance] = 6
 
   when straight?(sorted_hand)
     evaluated_hand[:title] = 'Straight'
+    evaluated_hand[:hand_signifigance] = 5
 
   when three_of_a_kind?(sorted_hand)
     evaluated_hand[:title] = 'Three of a Kind'
+    evaluated_hand[:hand_signifigance] = 4
 
   when two_pairs?(sorted_hand)
     evaluated_hand[:title] = 'Two Pairs'
+    evaluated_hand[:hand_signifigance] = 3
 
   when one_pair?(sorted_hand)
     evaluated_hand[:title] = 'One Pair'
+    evaluated_hand[:hand_signifigance] = 2
 
   else
     evaluated_hand[:title] = "High Card #{high_card(sorted_hand)}"
+    evaluated_hand[:hand_signifigance] = 1
   end
   evaluated_hand
 end
@@ -179,6 +191,10 @@ end
 
 def start_game(number_of_players)
   players = []
+  winning_hand = 0
+  winning_hand_name = nil
+  winner = nil
+  kicker = 0
 
   number_of_players.times do |i|
     player_name = get_players_name(i + 1)
@@ -188,8 +204,26 @@ def start_game(number_of_players)
   players.each do |player| 
     draw_hand(player)
     evaluated_hand = evaluate_hand(player.hand)
-    puts "#{player.name} has a #{evaluated_hand[:title]} with the hand #{evaluated_hand[:pretty_hand]}"
+
+    puts "#{player.name} has #{evaluated_hand[:title]} with the hand #{evaluated_hand[:pretty_hand]}"
+
+    if evaluated_hand[:hand_signifigance] == winning_hand
+      if evaluated_hand[:high_card] > kicker
+        winner = player.name 
+        kicker = evaluated_hand[:high_card]
+        winning_hand = evaluated_hand[:hand_signifigance]
+        winning_hand_name = evaluated_hand[:title]
+      end
+    end
+
+    if evaluated_hand[:hand_signifigance] > winning_hand
+      winner = player.name
+      kicker = evaluated_hand[:high_card]
+      winning_hand = evaluated_hand[:hand_signifigance]
+      winning_hand_name = evaluated_hand[:title]
+    end
   end
+  puts "Winner was #{winner} with the hand: #{winning_hand_name} with a #{convert_to_facecard(kicker)} kicker"
 end
 
 number_of_players = greeting
