@@ -3,6 +3,6 @@ class Card
 
   def initialize(value, suit)
     @value = value.to_i
-    @suit = suit.downcase
+    @suit = suit
   end
 end

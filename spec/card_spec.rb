@@ -3,8 +3,8 @@ require "card"
 require 'byebug'
 
 RSpec.describe Card, type: :model do
-  let (:stable_card) { Card.new(7, 'hearts') }
-  let (:format_card) { Card.new('7', 'HEaRts') }
+  let (:stable_card) { Card.new(7, 1) }
+  let (:format_card) { Card.new('7', 1) }
 
   describe 'attributes' do
     it 'has a readable value attribute' do

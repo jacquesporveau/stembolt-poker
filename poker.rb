@@ -32,19 +32,21 @@ end
 def convert_to_suit(num)
   case num
   when 1
-    'hearts'
+    'H'
   when 2
-    'diamonds'
+    'D'
   when 3
-    'spades'
+    'S'
   when 4
-    'clubs'
+    'C'
+  else
+    num.to_s
   end
 end
 
 def draw_card(player)
   value = rand(2..14)
-  suit = convert_to_suit(rand(1..4))
+  suit = rand(1..4)
 
   player.hand << Card.new(value, suit)
 end
@@ -70,6 +72,10 @@ end
 
 def four_of_a_kind?(hand)
   hand.map { |card| card.value }.uniq.length == 2
+end
+
+def full_house?(hand)
+  three_of_a_kind?(hand) && one_pair?(hand)
 end
 
 def flush?(hand)
@@ -121,7 +127,46 @@ end
 
 def evaluate_hand(hand)
   sorted_hand = hand.sort_by { |card| card.value }
-  three_of_a_kind?(sorted_hand)
+  pretty_hand = sorted_hand.map do |card|
+    'wip'
+  end
+  evaluated_hand = {
+    hand: sorted_hand,
+    title: ''
+  }
+
+  case
+  when royal_flush?(sorted_hand)
+    evaluated_hand[:title] = 'Royal Flush'
+
+  when straight_flush?(sorted_hand)
+    evaluated_hand[:title] = 'Straight Flush'
+
+  when four_of_a_kind?(sorted_hand)
+    evaluated_hand[:title] = 'Four of a Kind'
+
+  when full_house?(sorted_hand)
+    evaluated_hand[:title] = 'Full House'
+
+  when flush?(sorted_hand)
+    evaluated_hand[:title] = 'Flush'
+
+  when straight?(sorted_hand)
+    evaluated_hand[:title] = 'Straight'
+
+  when three_of_a_kind?(sorted_hand)
+    evaluated_hand[:title] = 'Three of a Kind'
+
+  when two_pairs?(sorted_hand)
+    evaluated_hand[:title] = 'Two Pairs'
+
+  when one_pair?(sorted_hand)
+    evaluated_hand[:title] = 'One Pair'
+
+  else
+    evaluated_hand[:title] = "High Card #{high_card(sorted_hand)}"
+  end
+  evaluated_hand
 end
 
 #
@@ -138,7 +183,8 @@ def start_game(number_of_players)
 
   players.each do |player| 
     draw_hand(player)
-    player.hand = evaluate_hand(player.hand)
+    evaluated_hand = evaluate_hand(player.hand)
+    puts "#{player.name} has a #{evaluated_hand[:title]}"
   end
 end
 
