@@ -48,7 +48,6 @@ class Game
         winning_hand_name = evaluated_hand[:title]
       end
     end
-    byebug
     puts "Winner was #{winner} with the hand: #{winning_hand_name} with a #{convert_to_facecard(kicker)} kicker"
     winner
   end
