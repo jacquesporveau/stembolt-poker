@@ -12,15 +12,11 @@ RSpec.describe Card, type: :model do
     end
 
     it 'has a readable suit attribute' do
-      expect(stable_card.suit).to eq('hearts')
+      expect(stable_card.suit).to eq(1)
     end
 
     it 'formats the value attribute to an integer' do
       expect(format_card.value).to eq(7)
-    end
-
-    it 'formats the suit attribute to a downcase string' do
-      expect(format_card.suit).to eq('hearts')
     end
   end
 end

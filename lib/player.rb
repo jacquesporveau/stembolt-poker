@@ -107,13 +107,8 @@ class Player
   end
 
   def three_of_a_kind?(hand)
-    return false unless one_pair?(hand)
     hand_by_card_val = hand.map { |card| card.value }
-
-    hand_by_card_val.each do |card|
-      return true if (hand_by_card_val - [card, card, card]).length == 2
-    end
-    false
+    hand_by_card_val.detect{ |e| hand_by_card_val.count(e) > 2 } != nil
   end
 
   def two_pairs?(hand)
@@ -122,10 +117,52 @@ class Player
   end
 
   def one_pair?(hand)
-    hand_by_card_val = hand.map { |card| card.value }.uniq.length == 4
+    hand_by_card_val = hand.map { |card| card.value }
+    hand_by_card_val.detect{ |e| hand_by_card_val.count(e) > 1 } != nil
   end
 
   def high_card(hand)
     convert_to_facecard(hand.map { |card| card.value }.max)
+  end
+
+  def draw_card
+    value = rand(2..14)
+    suit = rand(1..4)
+
+    hand << Card.new(value, suit)
+  end
+
+  def draw_hand
+    5.times { draw_card }
+  end
+
+  def convert_to_facecard(num)
+    case num
+    when 11
+      'J'
+    when 12
+      'Q'
+    when 13
+      'K'
+    when 14
+      'A'
+    else
+      num.to_s
+    end
+  end
+
+  def convert_to_suit(num)
+    case num
+    when 1
+      'H'
+    when 2
+      'D'
+    when 3
+      'S'
+    when 4
+      'C'
+    else
+      num.to_s
+    end
   end
 end
